@@ -91,7 +91,7 @@ public:
 			delete[] this->VectorVariabile;
 		this->nrVariabile = nrVariabile;
 		this->VectorVariabile = new float[nrVariabile];
-		for (int i; i < nrVariabile; i++)
+		for (int i=0; i < nrVariabile; i++)
 			this->VectorVariabile[i] = variabile[i];
 	}
 
@@ -173,9 +173,78 @@ public:
 		 }
 
 	 }
-};
 
+};
 int CalculatorSimplu::nrMaxCalcule;
+
+//operatorii << si >> 
+
+ostream& operator<<(ostream& out, CalculatorSimplu c)
+{
+	out << "Numarul de variabile pe care vrem sa le calculam: ";
+	out << c.getnrVariabile() << endl;
+	float* vecVariabile = c.getVectorVariabile();
+	if (vecVariabile!= nullptr)
+	{
+		out << "Variabile pe care le vrem sa le calculam: ";
+		for (int i = 0; i < c.getnrVariabile(); i++)
+			out << vecVariabile[i]<< " ";
+	}
+	out << " Numarul de rezultate intermediare: " << endl;
+	out << c.getcapacitateVector() << endl;
+	double* vecRez = c.getvectorRezultate();
+	if (vecRez!= nullptr)
+	{
+		cout << "Variabile pe care le vrem sa le calculam: ";
+		for (int i = 0; i < c.getcapacitateVector(); i++)
+			out << vecRez[i] << " ";
+	}
+	out << endl;
+	return out;
+}
+
+istream& operator>>(istream& in, CalculatorSimplu& c)
+{
+	int variabile;
+	cout << "Numarul de variabile: ";
+	in >> variabile;
+	c.setnrVariabile(variabile);
+	if (variabile  != 0)
+	{
+		float* var = new float[c.getnrVariabile()];
+		for (int i = 0; i < variabile; i++)
+		{
+			cout << "Variabila " << i+1;
+			in >> var[i];
+			cout << endl;
+		}
+		c.setVectorVariabile(var, variabile);
+	}
+
+	int cap;
+	cout << "Numarul de capacitate a vectorului";
+	in >> cap;
+	c.setcapacitateVector(cap);
+
+	if (cap != 0)
+	{
+		cout << "Numarul de rezultate intermediare: ";
+		double* rez = new double[cap];
+		for (int i = 0; i < cap; i++)
+		{
+			cout << "Rezultatul intermediar" << i + 1;
+			in >> rez[i];
+			cout << endl;
+		}
+		c.setvectorRezultate(rez, cap);
+	}
+	return in;
+}
+
+
+
+
+
 
 int main()
 {
