@@ -377,6 +377,25 @@ public:
         return operands[operandsIdx];
     }
 
+
+    Calculator& operator=(const Calculator& other) 
+    {
+        if (this != &other) { 
+            if (expresie != nullptr) {
+                delete[] expresie;
+            }
+
+            if (other.expresie != nullptr) {
+                expresie = new char[strlen(other.expresie) + 1];
+                strcpy_s(expresie, strlen(other.expresie) + 1, other.expresie);
+            }
+            else {
+                expresie = nullptr;
+            }
+        }
+        return *this; 
+    }
+
     ~Calculator()
     {
         if (this->expresie != nullptr)
@@ -388,6 +407,16 @@ public:
         float rezultat = parseAndCompute(expresie);
         return static_cast<int>(rezultat);
     }
+
+    Calculator operator+(const Calculator& other) const {
+       
+        float rezultat1 = parseAndCompute(this->expresie);
+        float rezultat2 = parseAndCompute(other.expresie);
+        float suma = rezultat1 + rezultat2;
+        string nouaExpresie = to_string(suma);
+        return Calculator(nouaExpresie.c_str());
+    }
+
 
 
 };

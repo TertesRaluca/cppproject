@@ -123,6 +123,22 @@ public:
             delete[] this->expresie;
     }
 
+    Eliminare& operator=(const Eliminare& other)
+    {
+        if (this != &other) { 
+            delete[] expresie; 
+
+            if (other.expresie != nullptr) {
+                expresie = new char[strlen(other.expresie) + 1];
+                strcpy_s(expresie, strlen(other.expresie) + 1, other.expresie);
+            }
+            else {
+                expresie = nullptr;
+            }
+        }
+        return *this;
+    }
+
     bool operator!() const {
         if (expresie == nullptr) {
             return true; 
@@ -137,6 +153,17 @@ public:
         return true; 
     }
 
+    bool operator==(const Eliminare& other) const {
+        if (expresie == nullptr && other.expresie == nullptr) {
+            return true; 
+        }
+        if (expresie == nullptr || other.expresie == nullptr) {
+            return false; 
+        }
+        return strlen(expresie) == strlen(other.expresie); 
+    }
+
+   
 };
 
 const int Eliminare::maxExpresie = 35;

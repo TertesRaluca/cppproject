@@ -330,10 +330,18 @@ public:
 		}
 		else
 		{
-			return;
+			throw exception();
 		}
 	}
 
+	Ecuatie& operator++() {
+		if (nrOperanzi > 0 && operanzi != nullptr) {
+			++operanzi[0]; 
+		}
+		return *this;
+	}
+
+	
 
 };
 

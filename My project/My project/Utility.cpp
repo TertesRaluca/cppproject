@@ -14,7 +14,7 @@ int main()
 	const char* expresie = "-2.546 - 2.55345 * [2 ^ (3 + 27#3)] + 1 + 5 * 2\0";
 	Eliminare objEliminare(expresie);
     const char* rezultat = Eliminare::parse(expresie);
-	const char* expresie2 = "-2+3";
+	const char* expresie2 = "-2+3*8";
 	Calculator objCalculator(expresie2);
 	cout << Calculator::parseAndCompute(expresie2) << endl;
 
@@ -38,9 +38,6 @@ int main()
 	   cout << operators[i] << " ";
    }
    
-   float rezcal = 0;
-
-   cout<<endl<<Calculator::calculate(operands, operators, &rezcal);
-  
+ 
 	return 0;
 }
