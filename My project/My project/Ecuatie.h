@@ -334,6 +334,7 @@ public:
 		}
 	}
 
+
 	Ecuatie& operator++() {
 		if (nrOperanzi > 0 && operanzi != nullptr) {
 			++operanzi[0]; 
@@ -341,7 +342,29 @@ public:
 		return *this;
 	}
 
-	
+	string extrageSubExpresie(int start, int end) {
+		if (expresie == nullptr || start < 0 || end >= strlen(expresie) || start > end) {
+			return ""; 
+		}
+
+		string subExpresie;
+		for (int i = start; i <= end; ++i) {
+			subExpresie += expresie[i];
+		}
+		return subExpresie;
+	}
+
+	int lungimeFaraSpatii() {
+		if (expresie == nullptr) return 0;
+
+		int lungime = 0;
+		for (int i = 0; expresie[i] != '\0'; i++) {
+			if (expresie[i] != ' ') {
+				lungime++;
+			}
+		}
+		return lungime;
+	}
 
 };
 

@@ -9,6 +9,12 @@
 
 using namespace std;
 
+/// <summary>
+/// Eu, initial am facut supraincarcarile pt clasele eliminare si ecutie, dar imi dadea o erare care zicea ca sunt deja definite in alta clasa
+/// si pentru a nu avea erori le-am sters.
+/// </summary>
+
+
 int main()
 {
 	const char* expresie = "-2.546 - 2.55345 * [2 ^ (3 + 27#3)] + 1 + 5 * 2\0";

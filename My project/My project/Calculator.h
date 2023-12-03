@@ -378,13 +378,14 @@ public:
     }
 
 
-    Calculator& operator=(const Calculator& other) 
-    {
+    Calculator& operator=(const Calculator& other) {
         if (this != &other) { 
+           
             if (expresie != nullptr) {
                 delete[] expresie;
             }
 
+            
             if (other.expresie != nullptr) {
                 expresie = new char[strlen(other.expresie) + 1];
                 strcpy_s(expresie, strlen(other.expresie) + 1, other.expresie);
