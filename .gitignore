@@ -401,3 +401,6 @@ FodyWeavers.xsd
 *.sln
 *.vcxproj
 *.vcxproj.filters
+/My project/My project/Clasa Calculator.cpp
+/My project/My project/Clasa Parser.cpp
+/My project/My project/Source.cpp
