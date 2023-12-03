@@ -123,7 +123,19 @@ public:
             delete[] this->expresie;
     }
 
- 
+    bool operator!() const {
+        if (expresie == nullptr) {
+            return true; 
+        }
+
+        for (int i = 0; expresie[i] != '\0'; i++) {
+            if (expresie[i] == '(' || expresie[i] == ')' ||
+                expresie[i] == '[' || expresie[i] == ']') {
+                return false; 
+            }
+        }
+        return true; 
+    }
 
 };
 

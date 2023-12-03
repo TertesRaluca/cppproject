@@ -377,6 +377,12 @@ public:
         return operands[operandsIdx];
     }
 
+    ~Calculator()
+    {
+        if (this->expresie != nullptr)
+            delete[] this->expresie;
+    }
+
     explicit operator int() const 
     {
         float rezultat = parseAndCompute(expresie);

@@ -312,6 +312,16 @@ public:
 		*n_operators = operatorsIdx;
 	}
 
+	~Ecuatie()
+	{
+		if (this->expresie != nullptr)
+			delete[] this->expresie;
+		if (this->operanzi != nullptr)
+			delete[] this->operanzi;
+		if (this->operatori != nullptr)
+			delete[] this->operatori;
+	}
+
 	float& operator[](int index)
 	{
 		if (index >= 0 && index < nrOperanzi)
@@ -323,6 +333,7 @@ public:
 			return;
 		}
 	}
+
 
 };
 
