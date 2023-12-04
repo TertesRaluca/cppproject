@@ -23,6 +23,21 @@ public:
     }
 
 
+    Eliminare(Eliminare& e)
+    {
+        if (e.expresie != nullptr)
+        {
+            if (this->expresie != nullptr)
+            {
+                delete[] this->expresie;
+            }
+            this->expresie = new char[strlen(e.expresie) + 1];
+            strcpy_s(this->expresie, strlen(e.expresie) + 1, e.expresie);
+        }
+        else
+            this->expresie = nullptr;
+    }
+
     void setExpresie(const char* vector)
     {
         if (vector != nullptr)
@@ -56,43 +71,35 @@ public:
         char* parsed_exp = new char[strlen(str)+1];
         int parsedExpIdx = -1;
 
-        // Pentru verificarea parantezelor
+       
         char* openParantheses = new char[strlen(str)];
         int paranthesesIdx = -1;
         for (int i = 0; i < strlen(str); i++) {
-            // Daca e spatiu, continuam cu urmatorul caracter
+            
             if (str[i] == ' ') {
                 continue;
             }
 
-            // Retinem in noua expresie
+            
             parsed_exp[++parsedExpIdx] = str[i];
 
-            // Retinem parantezele deschise pe masura ce le intalnim
+            
             if (str[i] == '(' || str[i] == '[') {
                 openParantheses[++paranthesesIdx] = str[i];
                 continue;
             }
 
-            /*
-                Altfel, daca este inchisa,
-                verificam intai daca inchiderea se face corect
-            */
+            
             if (str[i] == ')' || str[i] == ']') {
                 if (paranthesesIdx == -1) {
-                    /*
-                        Daca am gasit o paranteza inchisa fara pereche,
-                        returnam eroare
-                    */
+                    
                     cout << "Wrong parantheses alignment - closed paranthesis without opening one" << endl;
                     return nullptr;
                 }
                 else {
                     char lastOpenParanthesis = openParantheses[paranthesesIdx--];
 
-                    /*
-                        Daca nu e inchisa corect, returnam eroare
-                    */
+                    
                     if ((lastOpenParanthesis == '(' && str[i] == ']')
                         || (lastOpenParanthesis == '[' && str[i] == ')')) {
                         cout << "Wrong parantheses alignment - open and close paranthesis don't match" << endl;
@@ -102,11 +109,7 @@ public:
             }
         }
 
-        /*
-            Daca mai avem paranteze deschise
-            care nu au fost inchise,
-            returnam eroare
-        */
+        
         if (paranthesesIdx != -1) {
             cout << "Unclosed parantheses" << endl;
             return nullptr;
@@ -125,7 +128,8 @@ public:
 
     Eliminare& operator=(const Eliminare& other)
     {
-        if (this != &other) { 
+        if (this != &other) 
+        { 
             delete[] expresie; 
 
             if (other.expresie != nullptr) {
@@ -163,12 +167,35 @@ public:
         return strlen(expresie) == strlen(other.expresie); 
     }
 
+    int lungimeFaraSpatii() {
+        if (expresie == nullptr) return 0;
+
+        int lungime = 0;
+        for (int i = 0; expresie[i] != '\0'; i++) {
+            if (expresie[i] != ' ') {
+                lungime++;
+            }
+        }
+        return lungime;
+    }
+
+    string extrageSubExpresie(int start, int end) {
+        if (expresie == nullptr || start < 0 || end >= strlen(expresie) || start > end) {
+            return "";
+        }
+
+        string subExpresie;
+        for (int i = start; i <= end; ++i) {
+            subExpresie += expresie[i];
+        }
+        return subExpresie;
+    }
    
 };
 
 const int Eliminare::maxExpresie = 35;
 
-istream& operator>>(istream& in, Ecuatie& e)
+istream& operator>>(istream& in, Eliminare& e)
 {
         cout << "Introduceti expresia: ";
         string copie;
@@ -180,7 +207,7 @@ istream& operator>>(istream& in, Ecuatie& e)
     
 }
 
-ostream& operator<<(ostream& out, Ecuatie& e)
+ostream& operator<<(ostream& out, Eliminare& e)
 {
     out << "Expresie care trebuie evaluata: ";
     out << e.getExpresie();

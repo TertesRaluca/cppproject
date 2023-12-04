@@ -247,63 +247,132 @@ public:
 		}
 	}
 
+	Ecuatie& operator=(const Ecuatie& e)
+	{
+		if(this!=&e)
+			{
+			this->nrOperanzi = e.nrOperanzi;
+			this->nrOperatori = e.nrOperatori;
+			if (e.nrOperanzi != 0 && e.operanzi != nullptr)
+			{
+				if (this->operanzi != nullptr)
+				{
+					delete[] this->operanzi;
+				}
+				this->operanzi = new float[e.nrOperanzi];
+				for (int i = 0; i < e.nrOperanzi; i++)
+				{
+					this->operanzi[i] = e.operanzi[i];
+				}
+			}
+			else
+				this->operanzi = nullptr;
+			if (e.nrOperatori != 0 && e.operatori != nullptr)
+			{
+				if (this->operatori != nullptr)
+				{
+					delete[] this->operatori;
+				}
+				this->operatori = new char[strlen(e.operatori) + 1];
+				strcpy_s(this->operatori, strlen(e.operatori) + 1, e.operatori);
+			}
+			else
+			{
+				this->operatori = nullptr;
+			}
+
+			if (e.expresie != nullptr)
+			{
+				if (this->expresie != nullptr)
+				{
+					delete[] this->expresie;
+				}
+				this->expresie = new char[strlen(e.expresie) + 1];
+				strcpy_s(this->expresie, strlen(e.expresie) + 1, e.expresie);
+			}
+			else
+			{
+				this->expresie = nullptr;
+			}
+
+
+		}
+
+	}
+
 	static void extractOperandsAndOperators(const char* str, float* operands, char* operators, int* n_operands, int* n_operators) {
-		int operandsIdx = -1; // -1 desemneaza un array gol
+		int operandsIdx = -1; 
 		int operatorsIdx = -1;
 
-		// Numarul curent care trebuie parsat
 		char* currentOperand = new char[strlen(str)];
 		int currentOperandIndex = 0;
+		bool operandIsNegative = false;
 		for (int i = 0; i < strlen(str); i++) {
 
-			// Daca e spatiu, continuam cu urmatorul caracter
+			
 			if (str[i] == ' ') {
 				continue;
 			}
 
-			// Daca e o cifra, o retinem pentru conversie
+			
 			if ((str[i] >= '0' && str[i] <= '9') || str[i] == '.') {
 				currentOperand[currentOperandIndex++] = str[i];
 			}
 
-			// Daca dam peste un operator
+			
 			if (str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/' || str[i] == '^' || str[i] == '#' || str[i] == '(' || str[i] == ')' || str[i] == '[' || str[i] == ']') {
 				char currentFoundOperator = str[i];
 
-				// Parsam ultimul operand gasit si il retinem
+				
 				if (currentOperandIndex != 0) {
 					float operand = stringToFloat(currentOperand);
-					operands[++operandsIdx] = operand; // Il adaugam
 
-					// clear pentru urmatorul operand
+					if (operandIsNegative)
+						operands[++operandsIdx] = 0 - operand; 
+					else
+						operands[++operandsIdx] = operand;
+
+					
 					memset(currentOperand, 0, strlen(str));
 					currentOperandIndex = 0;
 				}
 				else {
-					/*
-						Daca nu am gasit niciun operand pana acum,
-						verificam daca nu cumva operatorul desemneaza semnul operandului urmator
-					*/
 					if (currentFoundOperator == '-') {
-						/*
-							Minus desemneaza un numar negativ,
-							prin urmare putem salva expresia "0 - numar"
-						*/
-						operands[++operandsIdx] = 0;
-						operators[++operatorsIdx] = currentFoundOperator;
+						operandIsNegative = true;
 						continue;
+					}
+					else if (currentFoundOperator == '[' || currentFoundOperator == '(') {
+						
+						if (operandIsNegative)
+							operators[operatorsIdx] = '-';
 					}
 				}
 
-				// Retinem operatorul
-				operators[++operatorsIdx] = currentFoundOperator;
+				
+				if (currentFoundOperator == '-') {
+					operandIsNegative = true;
+
+					
+					operators[++operatorsIdx] = '+';
+				}
+				else {
+					operandIsNegative = false;
+
+					
+					operators[++operatorsIdx] = currentFoundOperator;
+				}
+
 			}
 		}
 
-		// Parsam si ultimul operand din ecuatie (daca ecuatia se termina intr-unul)
+		
 		if (currentOperandIndex != 0) {
 			float operand = stringToFloat(currentOperand);
-			operands[++operandsIdx] = operand; // Il adaugam
+
+			if (operandIsNegative)
+				operands[++operandsIdx] = 0 - operand; 
+			else
+				operands[++operandsIdx] = operand;
 
 			delete[] currentOperand;
 		}
@@ -342,29 +411,54 @@ public:
 		return *this;
 	}
 
-	string extrageSubExpresie(int start, int end) {
-		if (expresie == nullptr || start < 0 || end >= strlen(expresie) || start > end) {
-			return ""; 
-		}
-
-		string subExpresie;
-		for (int i = start; i <= end; ++i) {
-			subExpresie += expresie[i];
-		}
-		return subExpresie;
-	}
-
-	int lungimeFaraSpatii() {
-		if (expresie == nullptr) return 0;
-
-		int lungime = 0;
-		for (int i = 0; expresie[i] != '\0'; i++) {
-			if (expresie[i] != ' ') {
-				lungime++;
-			}
-		}
-		return lungime;
-	}
-
 };
+
+ostream& operator<<(ostream& out, Ecuatie& e)
+{
+	out << "Expresia de calculat: "<<e.getExpresie()<<endl;
+	out << "Numarul de operanzi este: " << e.getOperanzi() << endl;
+	out << "Numarul de operatori este: " << e.getnrOperatori() << endl;
+	if (e.getnrOperatori() != 0 && e.getOperatori() != nullptr)
+	{
+		out << "Operanzii ecuatiei sunt: " << e.getOperatori() << endl;
+	}
+	else
+	{
+		out << "Functia nu are operatori" << endl;
+	}
+	if (e.getnrOperanzi() != 0 && e.getOperanzi() != nullptr)
+	{
+		for (int i = 0; i < e.getnrOperatori(); i++)
+			out << e.getOperatori()[i] << " " << endl;
+	}
+	return out;
+}
+
+istream& operator>>(istream& in, Ecuatie& e)
+{
+	cout << "Numarul de operanzi este: "<<endl;
+	int nrOperatori;
+	int nrOperanzi;
+	in >> nrOperanzi;
+	e.setnrOperanzi(nrOperanzi);
+	cout << "Numarul de operatori: " << endl;;
+	in >> nrOperatori;
+	e.setnrOperatori(nrOperatori);
+	cout << "Ecuatia care trebuie evaluata: ";
+	string copie;
+	getline(in, copie);
+	e.setExpresie(copie.c_str());
+	cout << endl << "Operatorii expresiei sunt: "<<endl;
+	cout << endl << "Operanzii expresiei sunt: " << endl;
+	float* vector = new float[nrOperanzi];
+	for (int i = 0; i < nrOperanzi; i++)
+	{
+		cout << "Citeste elementul " << i + 1<<" ";
+		in >> vector[i];
+	}
+	e.setOperanzi(vector, nrOperanzi);
+
+	return in;
+
+}
 
